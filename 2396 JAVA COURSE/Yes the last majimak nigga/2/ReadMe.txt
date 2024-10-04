@@ -1,0 +1,1 @@
+Before running, go to run configurations and input the name of the .java file to be scanned into the arguments box. It counts the number of objects declared.

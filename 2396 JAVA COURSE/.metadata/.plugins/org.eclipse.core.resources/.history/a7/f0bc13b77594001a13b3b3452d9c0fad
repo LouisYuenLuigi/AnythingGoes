@@ -1,0 +1,76 @@
+import java.awt.Graphics;
+import java.awt.Image;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import javax.swing.JPanel;
+
+public class canvas extends JPanel{
+	
+	private ArrayList<Integer> order;
+	private ArrayList<Image> parts;
+	private Integer temp;
+	private Integer clix;
+	private ImageServer is;
+	
+	public canvas(ImageServer IS) {
+		this.is = IS;
+		order = new ArrayList<Integer>();
+		resetSeq();
+		parts = new ArrayList<Image>();
+		clix = 0;
+		
+		MouseAdapter ma = new MouseAdapter() {
+			public void mousePressed(MouseEvent e) {
+				int gay = e.getY()/70  + e.getX()/70*10;
+				temp = gay;
+				clix = 1;
+			}
+			public void mouseReleased(MouseEvent e) {
+				if (clix ==1) {
+					int manny = e.getY()/70  + e.getX()/70*10;
+					Collections.swap(order, temp, manny);
+					repaint();
+					clix =0;
+					is.sendOrder(order);
+				}
+				
+			}
+		};
+		this.addMouseListener(ma);
+	}
+	public void resetSeq() {
+		order.clear();
+		for (int i=0;i<100;i++) {
+			order.add(i);
+		}
+	}
+	public ArrayList<Integer> getOrder(){
+		return order;
+	}
+	public void paintit(BufferedImage bfg) {
+		parts.clear();
+		for (int i=0;i<10;i++) {
+			 for (int j=0;j<10;j++) {
+				 parts.add(bfg.getSubimage(i*70, j*70, 70, 70));
+			 }
+		}
+		repaint();
+	}
+	public void change(ArrayList<Integer> ans) {
+		order = ans;
+		repaint();
+	}
+	
+	public void paintComponent(Graphics g) {
+		for (int i=0;i<10;i++) {
+			 for (int j=0;j<10;j++) {
+				 g.drawImage(parts.get(order.get(j*10+i)),j*70,i*70,this); 
+			 }
+		}
+	}
+
+}

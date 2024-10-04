@@ -1,0 +1,1 @@
+The PBServer is set to autosave:true by default. To change it, open PBServer and change the value of the boolean autoSave to false.

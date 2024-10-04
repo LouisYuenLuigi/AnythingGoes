@@ -1,0 +1,50 @@
+import java.io.*;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Scanner;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+public class nigger {
+	private String manner;
+	private int clicks;
+	
+	public nigger() {
+		clicks=0;
+		
+		JFrame cock = new JFrame("cocks");
+		JTextField coclkkss = new JTextField(20);
+		coclkkss.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (clicks ==0) {
+					manner = coclkkss.getText();
+					clicks++;
+				}
+				if (clicks==1) {
+					System.out.println(manner+" amd " + coclkkss.getText());
+				}
+				
+			}
+			
+		});
+		cock.setVisible(true);
+		cock.setResizable(false);
+		cock.setSize(300,150);
+		cock.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		cock.setLocationRelativeTo(null);
+	}
+
+	public static void main(String[] args) {
+		
+		
+
+	}
+
+}

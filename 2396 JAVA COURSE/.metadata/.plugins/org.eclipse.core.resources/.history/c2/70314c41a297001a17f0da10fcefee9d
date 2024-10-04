@@ -1,0 +1,32 @@
+
+public class CountObjects {
+	
+	public void CountObjects() { }
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		if ( args.length < 1 ) {
+			System.err.println("Usage: java CountObjects <s>");
+				return;
+		}
+		
+		CountObjects cobj = new CountObjects();
+		cobj.doCountObjects(args[0]);
+
+	}
+	
+	public void doCountObjects(String filename) {
+		
+		int obj_count = 0;
+		
+		System.out.println("Esimtating number of objects creating in file " + filename);
+		
+		// estimating the number of newly created in the filename
+		// store the count in obj_count
+		
+		System.out.println("Estimated number of object in file " + filename + " is "
+				+ obj_count);
+		
+	}
+
+}

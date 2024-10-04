@@ -1,0 +1,22 @@
+public class staticBinding { 
+	public static class big { 
+		static void print() 
+		{ 
+			System.out.println("big"); 
+		} 
+	} 
+	public static class small extends big { 
+		static void print() 
+		{ 
+			System.out.println("small"); 
+		} 
+	} 
+
+	public static void main(String[] args) 
+	{ 
+		big A = new big(); 
+		big B = new small(); 
+		A.print(); 
+		B.print(); 
+	} 
+} 

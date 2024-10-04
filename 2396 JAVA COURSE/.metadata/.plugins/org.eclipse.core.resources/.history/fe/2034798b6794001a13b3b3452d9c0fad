@@ -1,0 +1,48 @@
+import java.io.*;
+import java.net.*;
+import java.util.ArrayList;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+
+import javax.swing.*;
+
+public class clientCanvas extends JPanel {
+	private ImagePeer imagepeer;
+	private ArrayList<Integer> order;
+	private ArrayList<Image> parts;
+	
+	public clientCanvas() {
+		order = new ArrayList<Integer>();
+		parts = new ArrayList<Image>();
+	}
+	public void paintit(BufferedImage bfg, ArrayList<Integer> newlist) {
+		parts.clear();
+		for (int i=0;i<10;i++) {
+			 for (int j=0;j<10;j++) {
+				 parts.add(bfg.getSubimage(i*70, j*70, 70, 70));
+			 }
+		}
+		order = newlist;
+		repaint();
+	}
+
+	
+	public void change(ArrayList<Integer> ans) {
+		order = ans;
+		repaint();
+	}
+	public void paintComponent(Graphics g) {
+		if (parts!= null) {
+			for (int i=0;i<10;i++) {
+				 for (int j=0;j<10;j++) {
+					 System.out.println("cock");
+					 g.drawImage(parts.get(order.get(j*10+i)),j*70,i*70,this);
+					 System.out.println("cockymen");
+				 }
+			}
+		}
+		
+	}
+
+}

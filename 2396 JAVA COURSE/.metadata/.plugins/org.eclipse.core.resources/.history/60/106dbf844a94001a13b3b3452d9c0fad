@@ -1,0 +1,34 @@
+import java.io.*;
+import java.net.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+
+import javax.swing.*;
+
+public class clientCanvas extends JPanel {
+	private BufferedImage currentimg;
+	private ImagePeer imagepeer;
+	public clientCanvas(ImagePeer IP) {
+		this.imagepeer = IP;
+		JButton gay = new JButton("gayness");
+		this.add(gay);
+		gay.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+				((ImagePeer) imagepeer).request();
+			}
+			
+		});
+	}
+	public void paintit(BufferedImage bfg) {
+		currentimg = bfg;
+		repaint();
+	}
+	public void paintComponent(Graphics g) {
+		g.drawImage(currentimg, 0,0,this);
+	}
+
+}

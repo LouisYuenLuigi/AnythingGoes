@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy 2 elements to &apos;javaass6/src&apos;&#x0D;&#x0A;- Original project: &apos;java5&apos;&#x0D;&#x0A;- Destination element: &apos;javaass6/src&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     Canvas.java&#x0D;&#x0A;     DrawObjectEditor.java" description="Copy compilation units" destination="=javaass6/src" element1="/src&lt;{Canvas.java" element2="/src&lt;{DrawObjectEditor.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1588083012791" units="2" version="1.0"/>
+</session>

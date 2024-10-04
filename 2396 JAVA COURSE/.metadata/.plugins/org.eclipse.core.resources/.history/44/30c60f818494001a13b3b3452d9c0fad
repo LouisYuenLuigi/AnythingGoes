@@ -1,0 +1,222 @@
+import java.io.*;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Scanner;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+
+public class ImagePeer extends JFrame{
+	private JTextField tf;
+	private JButton next;
+	private JButton cancel;
+	private JLabel label;
+	private String serverIP;
+	private Integer state = 1;
+	private String username;
+	private String password;
+	private boolean loggedin;
+	private Socket connection;
+	private Scanner in;
+	private PrintWriter out;
+	private clientCanvas cc;
+	
+	
+	public ImagePeer() {
+		super("Connect and Login");
+		loggedin = false;
+		JPanel mainpanel = new JPanel();
+		tf = new JTextField("localhost",20);
+		next = new JButton("Enter");
+		cancel = new JButton("Cancel");
+		label = new JLabel("Connect to server:");
+		mainpanel.add(label);
+		mainpanel.add(tf);
+		mainpanel.add(next);
+		mainpanel.add(cancel);
+		add(mainpanel);
+		
+		
+		next.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				System.out.println(state);
+				if (state==1) {
+					serverIP = tf.getText();
+					try {
+						runshit(serverIP);
+						dispose();
+						fetchUsername();
+						
+						
+					} catch (IOException e1) {
+						JOptionPane.showMessageDialog(tf, "Connection Failed");
+					}
+				}
+				
+				
+				tf.setText("");	
+			}
+		});
+		
+		cancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dispose();
+			}
+		});
+	}
+	
+	public void fetchUsername() {
+		JFrame cock = new JFrame("Connect and Login");
+		JTextField df = new JTextField("20");
+		JButton next1 = new JButton("Enter");
+		JButton cancer = new JButton("Cancel");
+		JLabel labor = new JLabel("Username");
+		JPanel upanel = new JPanel();
+		upanel.add(labor);
+		upanel.add(df);
+		upanel.add(next1);
+		upanel.add(cancer);
+		cock.add(upanel);
+		cock.setVisible(true);
+		cock.setResizable(false);
+		cock.setSize(300,150);
+		cock.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		cock.setLocationRelativeTo(null);
+	}
+	
+	public void newCanvas(String numm) {
+		JFrame cock = new JFrame("Image Peer #"+numm);
+		clientCanvas man = new clientCanvas(this);
+		this.cc = man;
+		cock.add(man);
+		cock.setVisible(true);
+		cock.setResizable(false);
+		cock.setSize(707,728);
+		cock.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		cock.setLocationRelativeTo(null);
+		System.out.println("nigga");
+	}
+	
+	private void runshit(String serverIP) throws IOException {
+		this.connection = new Socket(serverIP,9000);
+		this.in = new Scanner(connection.getInputStream());
+		this.out = new PrintWriter(connection.getOutputStream(), true);
+		
+		handler clithread = new handler(connection);
+		Thread t = new Thread(clithread);
+		t.start();		
+	}
+	public boolean login() throws IOException{
+		out.println("login");
+		out.println(username);
+		out.println(password);
+		if (loggedin) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	public void allowItFam() {
+		loggedin = true;
+	}
+	
+	public BufferedImage stringToImg(String encodedfile) throws IOException {
+		byte[] decodedString = Base64.getDecoder().decode(new String(encodedfile).getBytes("UTF-8"));
+		ByteArrayInputStream bis = new ByteArrayInputStream(decodedString);
+	    BufferedImage bImage2 = ImageIO.read(bis);
+	    bis.close();
+	    return bImage2;
+	}
+	
+	public void sendOrder(ArrayList<Integer> order) {
+		out.println("neworder");
+		out.println(order.size());
+		for (int i=0;i<order.size();i++) {
+			out.println(order.get(i));
+		}
+		
+	}
+	
+	
+	class handler implements Runnable{
+		private Socket socket;
+		public handler(Socket client) {
+			this.socket = client;
+		}
+		@Override
+		public void run() {
+			try {
+				readFromServer();
+			}catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+		public void readFromServer() throws Exception{
+			try {
+				while (in.hasNextLine()) {
+					
+					String command = in.nextLine();
+					
+					
+					if (command.contentEquals("allowed")) {
+						allowItFam();
+					}
+					
+					if (command.contentEquals("new")) {
+						newCanvas(in.nextLine());						
+						BufferedImage booty = stringToImg(in.nextLine());
+						ArrayList<Integer> ben = new ArrayList<Integer>();
+						Integer turns = Integer.parseInt(in.nextLine());						
+						for (int i=0;i<turns;i++) {
+							ben.add(Integer.parseInt(in.nextLine()));
+						}
+						cc.paintit(booty, ben);
+					}
+					if (command.contentEquals("newimg")) {
+						BufferedImage bbg = stringToImg(in.nextLine());
+						ArrayList<Integer> newans = new ArrayList<Integer>();
+						Integer turns = Integer.parseInt(in.nextLine());
+						for (int i=0;i<turns;i++) {
+							newans.add(Integer.parseInt(in.nextLine()));
+						}
+						cc.paintit(bbg, newans);
+					}
+					if (command.contentEquals("neworder") && loggedin == true){
+						ArrayList<Integer> neworder = new ArrayList<Integer>();
+						Integer turns = Integer.parseInt(in.nextLine());
+						for (int i=0;i<turns;i++) {
+							neworder.add(Integer.parseInt(in.nextLine()));
+						}
+						cc.change(neworder);
+					}
+				}
+			}catch(Exception e) {
+				e.printStackTrace();
+			}finally {
+				socket.close();
+			}
+		}
+
+	}
+
+	
+	public static void main(String[] args) {
+		ImagePeer IP = new ImagePeer();
+		IP.setVisible(true);
+		IP.setResizable(false);
+		IP.setSize(300,150);
+		IP.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		IP.setLocationRelativeTo(null);
+		
+
+	}
+
+
+
+}

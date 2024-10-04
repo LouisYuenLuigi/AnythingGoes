@@ -1,0 +1,29 @@
+import java.io.*;
+import java.net.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Scanner;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.image.BufferedImage;
+
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
+public class nigger {
+	private String manner;
+	private int clicks;
+	
+	public nigger() {
+		
+	}
+
+	public static void main(String[] args) {
+		if ((((60 % 4) == 0) ? 1 : 0)<2){
+			System.out.println("cock");
+		}
+		
+
+	}
+
+}

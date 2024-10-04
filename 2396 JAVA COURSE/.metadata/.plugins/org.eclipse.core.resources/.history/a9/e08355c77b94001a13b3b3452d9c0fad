@@ -1,0 +1,251 @@
+import java.io.*;
+import java.net.*;
+import java.awt.*;
+import java.awt.event.*;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.Base64;
+
+
+public class ImageServer extends JFrame{
+	private BufferedImage bfg;
+	private String imgAddress;
+	private ServerSocket server;
+	private Set<PrintWriter> writers = new HashSet<>();
+	private static ExecutorService pool;
+	private JPanel mainpanel;
+	private ArrayList<Integer> order;
+	private canvas pc;
+	private Integer clients;
+	
+	
+	
+	
+	
+	public ImageServer() throws IOException{
+		super("Image Server");
+		mainpanel = new JPanel();
+		mainpanel.setLayout(null);
+		canvas cv = new canvas(this);
+		this.pc = cv;
+		cv.setLayout(null);
+		cv.setBounds(0, 0, 700, 700);
+		JButton load = new JButton("Load another image");
+		load.setBounds(0, 700, 700, 30);
+		mainpanel.add(load);
+		mainpanel.add(cv);
+		add(mainpanel);
+		loadnew();
+		order = new ArrayList<Integer>();
+		for (int i=0;i<25;i++) {
+			order.add(i);
+		}
+		load.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				loadnew();
+				
+			}	
+		});
+		
+		
+	}
+	
+	
+	
+	public String imgToString(BufferedImage bi) throws IOException {
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		ImageIO.write(bi, "jpg", baos );		
+		byte[] imageInByte = baos.toByteArray();
+		String encodedfile = new String(Base64.getEncoder().encode(imageInByte));
+		baos.close();
+		return encodedfile;
+	}
+	
+	public BufferedImage stringToImg(String encodedfile) throws IOException {
+		byte[] decodedString = Base64.getDecoder().decode(new String(encodedfile).getBytes("UTF-8"));
+		ByteArrayInputStream bis = new ByteArrayInputStream(decodedString);
+	    BufferedImage bImage2 = ImageIO.read(bis);
+	    bis.close();
+	    return bImage2;
+	}
+	
+	public void takeConnections() {
+		pool = Executors.newFixedThreadPool(200);
+		clients = 0;
+		try {
+			server = new ServerSocket(9000);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		while(true) {
+			try {
+				System.out.println("[SERVER] Waiting for client to connect...");
+				Socket newman = server.accept();
+				pool.execute(new Handler(newman));
+				System.out.println("[SERVER] Connected to client!");	
+			}catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void sendImage(String newpic, ArrayList<Integer> newlist) {
+		
+		for (PrintWriter writer : writers) {
+			writer.println("newimg");
+			writer.println(newpic);
+			writer.println(newlist.size());
+			for (int i=0;i<newlist.size();i++) {
+				writer.println(newlist.get(i));
+			}
+		}
+		
+	}
+	
+	public void sendOrder(ArrayList<Integer> slam) {
+		for (PrintWriter writer : writers) {
+			writer.println("neworder");
+			writer.println(slam.size());
+			for (int i=0;i<slam.size();i++) {
+				writer.println(slam.get(i));
+			}
+		}
+	}
+		
+	public void loadnew() {
+		JFileChooser fc = new JFileChooser();
+		fc.setCurrentDirectory(new java.io.File("."));
+		FileNameExtensionFilter filter = new FileNameExtensionFilter("JPEG file", "jpg");
+		fc.setFileFilter(filter);
+		fc.setDialogTitle("Browse the image");
+		if (fc.showOpenDialog(new JButton()) == JFileChooser.APPROVE_OPTION) {	
+		}
+		
+		imgAddress = fc.getSelectedFile().getAbsolutePath();
+		bfg = new BufferedImage(700,700,BufferedImage.TYPE_INT_ARGB);
+		try {
+			bfg = ImageIO.read(new File(imgAddress));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		pc.resetSeq();
+		bfg = resize(bfg,700,700);
+		pc.paintit(bfg);
+		try {
+			sendImage(imgToString(bfg), pc.getOrder());
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+	
+	public static BufferedImage resize(BufferedImage img, int newW, int newH) {  
+	    int w = img.getWidth();  
+	    int h = img.getHeight();  
+	    BufferedImage newimg = new BufferedImage(newW, newH, img.getType());  
+	    Graphics2D g = newimg.createGraphics();  
+	    g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+	    RenderingHints.VALUE_INTERPOLATION_BILINEAR);  
+	    g.drawImage(img, 0, 0, newW, newH, 0, 0, w, h, null);  
+	    g.dispose();  
+	    return newimg;  
+	}
+	public void newUser(PrintWriter output) throws IOException {
+		addUser();
+		output.println("new");
+		output.println(clients);
+		output.println(imgToString(bfg));
+		output.println(pc.getOrder().size());
+		for (int i=0;i<pc.getOrder().size();i++) {
+			output.println(pc.getOrder().get(i));
+		}
+	}
+	public synchronized void addUser() {
+		clients++;
+	}
+	
+	public class Handler implements Runnable{
+		private Scanner input;
+		private PrintWriter output;
+		
+		private Socket sock;
+		
+		public Handler(Socket socket) {
+			this.sock = socket;
+		}
+
+		@Override
+		public void run() {
+			System.out.println("Connected "+sock);
+			try {
+				
+				input = new Scanner(sock.getInputStream());
+				output = new PrintWriter(sock.getOutputStream(), true);
+				writers.add(output);
+				newUser(output);
+				
+				while (input.hasNextLine()) {
+					String command = input.nextLine();
+
+					System.out.println("Server Received: " + command);
+					if (command.contentEquals("neworder")){
+						ArrayList<Integer> neworder = new ArrayList<Integer>();
+						Integer turns = Integer.parseInt(input.nextLine());
+						for (int i=0;i<turns;i++) {
+							neworder.add(Integer.parseInt(input.nextLine()));
+						}
+						pc.change(neworder);
+					}
+					
+
+					// broadcast updated number to all clients
+					sendOrder(pc.getOrder());
+
+				}
+
+
+			} catch (Exception e) {
+				System.out.println(e.getMessage());
+			} finally {
+				// client disconnected
+				if (output != null) {
+					writers.remove(output);
+				}
+			}
+
+		}
+		
+	}
+	
+	public static void main(String[] args) {
+		try {
+			ImageServer IS = new ImageServer();
+			IS.setVisible(true);
+			IS.setResizable(false);
+			IS.setSize(700,759);
+			IS.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			IS.setLocationRelativeTo(null);
+			IS.takeConnections();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+
+	}
+
+}
