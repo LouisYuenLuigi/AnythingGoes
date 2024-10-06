@@ -1,4 +1,3 @@
-
 public class LL {
 	
 	private int v;
@@ -16,5 +15,4 @@ public class LL {
 	}
 	
 	public int getV() { return v; }
-
 }

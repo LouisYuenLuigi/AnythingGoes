@@ -19,7 +19,7 @@ public class nigger {
 	}
 
 	public static void main(String[] args) {
-		if (3<<5){
+		if (3>5){
 			System.out.println("cock");
 		}
 		else {
