@@ -49,7 +49,10 @@ public class player extends entity {
 	 }
 	 
 	 public void update() {
-		 if(keyH.upPressed == true) {
+		 
+		 if(keyH.upPressed == true || keyH.downPressed == true || keyH.leftPressed == true || keyH.rightPressed == true) {
+			 
+			 if(keyH.upPressed == true) {
 //				y -= speed;
 				if(keyH.leftPressed == true) {
 					y -= (speed / 4 * 3);
@@ -68,7 +71,6 @@ public class player extends entity {
 			}
 			else if(keyH.downPressed == true) {
 //				y += speed;
-				
 				if(keyH.leftPressed == true) {
 					y += (speed / 4 * 3);
 					x -= (speed / 4 * 3);
@@ -84,7 +86,7 @@ public class player extends entity {
 					direction = "down";
 				}
 			}
-			
+				
 			else if(keyH.leftPressed == true) {
 				x -= speed;
 				direction = "left";
@@ -93,6 +95,21 @@ public class player extends entity {
 				x += speed;
 				direction = "right";
 			}
+			 
+			spriteCounter++;
+			if(spriteCounter > 10) {
+				if(spriteNum == 1) {
+					spriteNum = 2;
+				 }
+				 else if(spriteNum == 2) {
+					 spriteNum = 1;
+				 }
+				 spriteCounter = 0;
+			 }
+			 
+		 }
+		 
+		 
 	 }
 	 
 	 public void draw(Graphics2D g2) {
@@ -103,16 +120,36 @@ public class player extends entity {
 		 
 		 switch(direction) {
 		 case "up":
-			 image = up1;
+			 if(spriteNum == 1) {
+				 image = up1;				 
+			 }
+			 else if(spriteNum == 2) {
+				 image = up2;
+			 }
 			 break;
 		 case "down":
-			 image = down1;
+			 if(spriteNum == 1) {
+				 image = down1;				 
+			 }
+			 else if(spriteNum == 2) {
+				 image = down2;
+			 }
 			 break;
 		 case "left":
-			 image = left1;
+			 if(spriteNum == 1) {
+				 image = left1;				 
+			 }
+			 else if(spriteNum == 2) {
+				 image = left2;
+			 }
 			 break;
 		 case "right":
-			 image = right1;
+			 if(spriteNum == 1) {
+				 image = right1;				 
+			 }
+			 else if(spriteNum == 2) {
+				 image = right2;
+			 }
 			 break;
 		 }
 		 
