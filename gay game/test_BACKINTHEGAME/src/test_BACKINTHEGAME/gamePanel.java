@@ -21,11 +21,18 @@ public class gamePanel extends JPanel implements Runnable {
 	public final int screenWidth = tileSize * maxScreenCol;
 	public final int screenHeight = tileSize * maxScreenRow;
 	
+	
+	public final int maxWorldCol = 50;
+	public final int maxWorldRow = 50;
+	public final int worldWidth = tileSize * maxScreenCol;
+	public final int worldHeight = tileSize * maxScreenRow;
+	
+	
 	final int fps = 60;
 	
 	Thread gameThread;
 	KeyHandler keyH = new KeyHandler();
-	player player = new player(this, keyH);
+	public player player = new player(this, keyH);
 	tileManager tileManager = new tileManager(this);
 	
 	
@@ -68,7 +75,7 @@ public class gamePanel extends JPanel implements Runnable {
 			}
 			
 			if(timer >= 1000000000) {
-				System.out.println("FPS: " + drawCount);
+				//System.out.println("FPS: " + drawCount);
 				drawCount = 0;
 				timer = 0;
 			}

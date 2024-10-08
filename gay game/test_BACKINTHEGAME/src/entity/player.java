@@ -17,16 +17,21 @@ public class player extends entity {
 	gamePanel gPanel;
 	KeyHandler keyH;
 	
+	public final int screenX;
+	public final int screenY;
+	
 	public player(gamePanel gPanel, KeyHandler keyH) {
 		this.gPanel = gPanel;
 		this.keyH = keyH;
+		screenX = gPanel.screenWidth / 2 - gPanel.tileSize / 2;
+		screenY = gPanel.screenHeight / 2 - gPanel.tileSize / 2;
 		setDefaultValues();
 		getPlayerImage();
 		
 	}
 	 public void setDefaultValues() {
-		 x = 100;
-		 y = 100;
+		 worldX = gPanel.tileSize * 23;
+		 worldY = gPanel.tileSize * 21;
 		 speed = 4;
 		 direction = "right";
 	 }
@@ -55,44 +60,44 @@ public class player extends entity {
 			 if(keyH.upPressed == true) {
 //				y -= speed;
 				if(keyH.leftPressed == true) {
-					y -= (speed / 4 * 3);
-					x -= (speed / 4 * 3);
+					worldY -= (speed / 4 * 3);
+					worldX -= (speed / 4 * 3);
 					direction = "left";
 				}
 				else if(keyH.rightPressed == true) {
-					y -= (speed / 4 * 3);
-					x += (speed / 4 * 3);		
+					worldY -= (speed / 4 * 3);
+					worldX += (speed / 4 * 3);		
 					direction = "right";
 				}
 				else {
-					y -= speed;
+					worldY -= speed;
 					direction = "up";
 				}
 			}
 			else if(keyH.downPressed == true) {
 //				y += speed;
 				if(keyH.leftPressed == true) {
-					y += (speed / 4 * 3);
-					x -= (speed / 4 * 3);
+					worldY += (speed / 4 * 3);
+					worldX -= (speed / 4 * 3);
 					direction = "left";
 				}
 				else if(keyH.rightPressed == true) {
-					y += (speed / 4 * 3);
-					x += (speed / 4 * 3);
+					worldY += (speed / 4 * 3);
+					worldX += (speed / 4 * 3);
 					direction = "right";
 				}
 				else {
-					y += speed;
+					worldY += speed;
 					direction = "down";
 				}
 			}
 				
 			else if(keyH.leftPressed == true) {
-				x -= speed;
+				worldX -= speed;
 				direction = "left";
 			}
 			else if(keyH.rightPressed == true) {
-				x += speed;
+				worldX += speed;
 				direction = "right";
 			}
 			 
@@ -153,7 +158,7 @@ public class player extends entity {
 			 break;
 		 }
 		 
-		 g2.drawImage(image, x, y, gPanel.tileSize, gPanel.tileSize, null);
+		 g2.drawImage(image, screenX, screenY, gPanel.tileSize, gPanel.tileSize, null);
 	 }
 
 }
