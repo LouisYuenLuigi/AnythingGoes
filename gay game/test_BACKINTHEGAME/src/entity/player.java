@@ -2,6 +2,7 @@ package entity;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.awt.image.ImagingOpException;
 import java.io.IOException;
@@ -27,11 +28,12 @@ public class player extends entity {
 		screenY = gPanel.screenHeight / 2 - gPanel.tileSize / 2;
 		setDefaultValues();
 		getPlayerImage();
+		solidArea = new Rectangle(8,16, 32, 32);
 		
 	}
 	 public void setDefaultValues() {
 		 worldX = gPanel.tileSize * 23;
-		 worldY = gPanel.tileSize * 21;
+		 worldY = gPanel.tileSize * 22;
 		 speed = 4;
 		 direction = "right";
 	 }
@@ -39,14 +41,22 @@ public class player extends entity {
 	 public void getPlayerImage() {
 		 try {
 			 
-			 up1 = ImageIO.read(getClass().getResourceAsStream("/player/up1.png"));
-			 up2 = ImageIO.read(getClass().getResourceAsStream("/player/up2.png"));
-			 down1 = ImageIO.read(getClass().getResourceAsStream("/player/down1.png"));
-			 down2 = ImageIO.read(getClass().getResourceAsStream("/player/down2.png"));
-			 left1 = ImageIO.read(getClass().getResourceAsStream("/player/left1.png"));
-			 left2 = ImageIO.read(getClass().getResourceAsStream("/player/left2.png"));
-			 right1 = ImageIO.read(getClass().getResourceAsStream("/player/right1.png"));
-			 right2 = ImageIO.read(getClass().getResourceAsStream("/player/right2.png"));
+//			 up1 = ImageIO.read(getClass().getResourceAsStream("/player/up1.png"));
+//			 up2 = ImageIO.read(getClass().getResourceAsStream("/player/up2.png"));
+//			 down1 = ImageIO.read(getClass().getResourceAsStream("/player/down1.png"));
+//			 down2 = ImageIO.read(getClass().getResourceAsStream("/player/down2.png"));
+//			 left1 = ImageIO.read(getClass().getResourceAsStream("/player/left1.png"));
+//			 left2 = ImageIO.read(getClass().getResourceAsStream("/player/left2.png"));
+//			 right1 = ImageIO.read(getClass().getResourceAsStream("/player/right1.png"));
+//			 right2 = ImageIO.read(getClass().getResourceAsStream("/player/right2.png"));
+			 up1 = ImageIO.read(getClass().getResourceAsStream("/player/warrior.png"));
+			 up2 = ImageIO.read(getClass().getResourceAsStream("/player/warrior.png"));
+			 down1 = ImageIO.read(getClass().getResourceAsStream("/player/warrior.png"));
+			 down2 = ImageIO.read(getClass().getResourceAsStream("/player/warrior.png"));
+			 left1 = ImageIO.read(getClass().getResourceAsStream("/player/warrior.png"));
+			 left2 = ImageIO.read(getClass().getResourceAsStream("/player/warrior.png"));
+			 right1 = ImageIO.read(getClass().getResourceAsStream("/player/warrior.png"));
+			 right2 = ImageIO.read(getClass().getResourceAsStream("/player/warrior.png"));
 			 
 		 }catch(IOException e) {
 			 e.printStackTrace();
@@ -60,46 +70,72 @@ public class player extends entity {
 			 if(keyH.upPressed == true) {
 //				y -= speed;
 				if(keyH.leftPressed == true) {
-					worldY -= (speed / 4 * 3);
-					worldX -= (speed / 4 * 3);
-					direction = "left";
+					direction = "leftUp";
 				}
-				else if(keyH.rightPressed == true) {
-					worldY -= (speed / 4 * 3);
-					worldX += (speed / 4 * 3);		
-					direction = "right";
+				else if(keyH.rightPressed == true) {		
+					direction = "rightUp";
 				}
 				else {
-					worldY -= speed;
 					direction = "up";
 				}
 			}
 			else if(keyH.downPressed == true) {
 //				y += speed;
 				if(keyH.leftPressed == true) {
-					worldY += (speed / 4 * 3);
-					worldX -= (speed / 4 * 3);
-					direction = "left";
+					direction = "leftDown";
 				}
 				else if(keyH.rightPressed == true) {
-					worldY += (speed / 4 * 3);
-					worldX += (speed / 4 * 3);
-					direction = "right";
+					direction = "rightDown";
 				}
 				else {
-					worldY += speed;
 					direction = "down";
 				}
 			}
 				
 			else if(keyH.leftPressed == true) {
-				worldX -= speed;
 				direction = "left";
 			}
 			else if(keyH.rightPressed == true) {
-				worldX += speed;
 				direction = "right";
 			}
+			 
+			 collisionOn = false;
+			 gPanel.collisionChecker.checkTile(this);
+			 
+			 if (collisionOn == false) {
+				 switch(direction) {
+				 case "up":
+					 worldY -= speed;
+					 break;
+				 case "down":
+					 worldY += speed;
+					 break;
+				 case "left":
+					 worldX -= speed;
+					 break;
+				 case "right":
+					 worldX += speed;
+					 break;
+				 case "leftUp":
+					 worldY -= (speed / 4 * 3);
+					 worldX -= (speed / 4 * 3);
+					 break;
+				 case "leftDown":
+					 worldY += (speed / 4 * 3);
+					 worldX -= (speed / 4 * 3);
+					 break;
+				 case "rightUp":
+					 worldY -= (speed / 4 * 3);
+					 worldX += (speed / 4 * 3);
+					 break;
+				 case "rightDown":
+					 worldY += (speed / 4 * 3);
+					 worldX += (speed / 4 * 3);
+					 break;
+					 
+
+				 }
+			 }
 			 
 			spriteCounter++;
 			if(spriteCounter > 10) {
@@ -141,6 +177,8 @@ public class player extends entity {
 			 }
 			 break;
 		 case "left":
+		 case "leftUp":
+		 case "leftDown":
 			 if(spriteNum == 1) {
 				 image = left1;				 
 			 }
@@ -149,6 +187,8 @@ public class player extends entity {
 			 }
 			 break;
 		 case "right":
+		 case "rightUp":
+		 case "rightDown":
 			 if(spriteNum == 1) {
 				 image = right1;				 
 			 }
@@ -159,6 +199,8 @@ public class player extends entity {
 		 }
 		 
 		 g2.drawImage(image, screenX, screenY, gPanel.tileSize, gPanel.tileSize, null);
+		 g2.setColor(Color.red);
+		 g2.drawRect(screenX + solidArea.x, screenY + solidArea.y, solidArea.width, solidArea.height);
 	 }
 
 }

@@ -13,8 +13,8 @@ import test_BACKINTHEGAME.gamePanel;
 public class tileManager {
 	
 	gamePanel gPanel;
-	tile[] tile;
-	int mapTileNumber[][];
+	public tile[] tile;
+	public int mapTileNumber[][];
 	
 	public tileManager(gamePanel gPanel) {
 		this.gPanel = gPanel;
@@ -37,9 +37,11 @@ public class tileManager {
 			
 			tile[2] = new tile();
 			tile[2].image = ImageIO.read(getClass().getResourceAsStream("/tiles/bricks.png"));
+			tile[2].collision = true;
 			
 			tile[3] = new tile();
 			tile[3].image = ImageIO.read(getClass().getResourceAsStream("/tiles/mud.png"));
+			tile[3].collision = true;
 			
 			tile[4] = new tile();
 			tile[4].image = ImageIO.read(getClass().getResourceAsStream("/tiles/grass1.png"));
@@ -110,6 +112,9 @@ public class tileManager {
 			   worldY + gPanel.tileSize > gPanel.player.worldY - gPanel.player.screenY &&
 			   worldY - gPanel.tileSize < gPanel.player.worldY + gPanel.player.screenY) {
 				g2.drawImage(tile[tileNum].image, screenX, screenY, gPanel.tileSize, gPanel.tileSize, null);
+				
+				
+//				g2.fillOval(screenX,screenY, gPanel.tileSize,gPanel.tileSize);
 			}
 				
 			worldCol++;
