@@ -68,9 +68,7 @@ public class CollisionChecker {
 			entityLeftCol = (entityLeftWorldX - entity.speed) / gPanel.tileSize;
 			entityBottomRow = (entityBottomWorldY - entity.speed) / gPanel.tileSize;
 			entityRightCol = (entityRightWorldX - entity.speed) / gPanel.tileSize;
-			
-			System.out.println(17 / 4 * 4);
-			
+						
 			tileNum1 = gPanel.tileManager.mapTileNumber[entityLeftCol][entityTopRow];
 			tileNum2 = gPanel.tileManager.mapTileNumber[entityRightCol][entityTopRow];
 			tileNum3 = gPanel.tileManager.mapTileNumber[entityLeftCol][entityBottomRow];
